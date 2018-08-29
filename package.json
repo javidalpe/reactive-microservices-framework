@@ -1,0 +1,26 @@
+{
+  "name": "reactive-microservices-framework",
+  "version": "1.0.0",
+  "description": "A exploratory project to build a simple reactive microservices framework in node",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javidalpe/reactive-microservices-framework.git"
+  },
+  "keywords": [
+    "node",
+    "web",
+    "express",
+    "reactive",
+    "microservices"
+  ],
+  "author": "Javier Vidal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/javidalpe/reactive-microservices-framework/issues"
+  },
+  "homepage": "https://github.com/javidalpe/reactive-microservices-framework#readme"
+}
