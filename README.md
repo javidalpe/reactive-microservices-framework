@@ -24,11 +24,11 @@ The classic approach of async programming in Node (async/await, promisis) do
  Example:
  
 ```javascript
-const purchaseEndPoint = request$ => request$.pipe(
-	filter(request => request.req.method === 'GET' && request.req.url === '/purchase'),
-	delay(1000)
-	do(request => request.res.write('Hello World!'))
-);
+const purchaseEndPoint =  $requests =>
+	$requests.pipe(
+		delay(1000),
+		tap(({req, res}) => res.write("hello world!")),
+	);
 ```
  
  ### License
