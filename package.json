@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/javidalpe/reactive-microservices-framework#readme",
   "dependencies": {
+    "express": "^4.16.3",
     "rxjs": "^6.3.1",
     "rxjs-compat": "^6.3.1",
     "universal-rxjs-ajax": "^2.0.0"

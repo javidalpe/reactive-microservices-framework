@@ -1,60 +1,47 @@
-const http = require("http");
+const express = require("express");
 const Subject = require("rxjs/internal/Subject").Subject;
 const tap = require("rxjs/operators/tap").tap;
 const mergeMap = require("rxjs/operators/mergeMap").mergeMap;
+const filter = require("rxjs/operators/filter").filter;
 const mapTo = require("rxjs/operators/mapTo").mapTo;
 const request = require("universal-rxjs-ajax").request;
 
-const hostname = "127.0.0.1";
-const port = 1337;
-
-const routes = {};
-
-addEndPoint = (url, epic) => {
+const observableMiddleware = epics => {
   const requests$ = new Subject();
-  epic(requests$).subscribe(({ req, res }) => {
-    res.end();
-  });
-  routes[url] = requests$;
+  epics.forEach(e => e(requests$).subscribe(({ req, res }) => {console.log("epico")}));
+  return (req, res, next) => {
+    requests$.next({ req, res });
+    next();
+  };
 };
 
-addEndPoint("/", $requests =>
-  $requests.pipe(tap(({ req, res }) => res.write("welcome")))
-);
-
-addEndPoint("/purchase", $requests =>
-  $requests.pipe(tap(({ req, res }) => res.write("purchase")))
-);
-
-addEndPoint("/methods", $requests =>
-  $requests.pipe(tap(({ req, res }) => res.write("methods")))
-);
-
-addEndPoint("/users", $requests =>
+const welcomeEndpoint = $requests =>
   $requests.pipe(
-    mergeMap(({ req, res }) =>
-      request({
-        url: `https://api.github.com/search/users?q=javidalpe`
-      }).pipe(
-        tap(response => res.write(JSON.stringify(response.response.items))),
-        mapTo({ req, res })
-      )
-    )
-  )
-);
+    filter(({ req }) => (req.url === "/")),
+    tap(({ req, res }) => res.send("welcome"))
+  );
 
-http
-  .createServer((req, res) => {
-    if (routes.hasOwnProperty(req.url)) {
-      routes[req.url].next({ req, res });
-    } else {
-      res.statusCode = 404;
-      res.end();
-    }
+const userEndpoint = $requests =>
+	$requests.pipe(
+		filter(({ req }) => (req.url === "/user")),
+		tap(({ req, res }) => res.send("user"))
+	);
 
-    // $requests.next({req: req, res: res});
-    console.log(req.url);
-  })
-  .listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-  });
+const searchEndpoint = $requests =>
+	$requests.pipe(
+		filter(({ req }) => (req.url === "/search")),
+		mergeMap(({ req, res }) =>
+			request({
+				url: `https://api.github.com/search/users?q=javidalpe   `
+			}).pipe(
+				tap(response => res.send(JSON.stringify(response.response.items))),
+				mapTo({ req, res })
+			)
+		)
+	);
+
+const app = express();
+app.use(observableMiddleware([welcomeEndpoint, userEndpoint, searchEndpoint]));
+app.listen(3000, function() {
+  console.log("Example app listening on http://localhost:3000!");
+});
