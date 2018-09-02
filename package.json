@@ -25,6 +25,13 @@
   "homepage": "https://github.com/javidalpe/reactive-microservices-framework#readme",
   "dependencies": {
     "rxjs": "^6.3.1",
-    "rxjs-compat": "^6.3.1"
+    "rxjs-compat": "^6.3.1",
+    "universal-rxjs-ajax": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-prettier": "^2.6.2",
+    "prettier": "^1.14.2"
   }
 }
